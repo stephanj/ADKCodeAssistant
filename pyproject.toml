@@ -1,0 +1,32 @@
+[project]
+name = "coding-assistant"
+version = "0.1.0"
+description = "A coding assistant that helps with code analysis, planning, implementation, and review"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+license = "Apache License 2.0"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.poetry.dependencies]
+google-cloud-aiplatform = { extras = [
+    "agent_engines",
+    "adk",
+], git = "https://github.com/googleapis/python-aiplatform.git", rev = "copybara_738852226" }
+python = "^3.9"
+pydantic = "^2.10.6"
+python-dotenv = "^1.0.1"
+google-genai = "^1.9.0"
+google-adk = ">=0.0.2"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+google-adk = { version = ">=0.0.2", extras = ["eval"] }
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
