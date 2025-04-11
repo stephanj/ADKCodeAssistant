@@ -41,7 +41,7 @@ The video was sped up.
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/agenticCodingWithADK.git
+   git clone https://github.com/stephanj/agenticCodingWithADK.git
    cd agenticCodingWithADK
    ```
 
