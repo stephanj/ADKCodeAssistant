@@ -18,6 +18,9 @@ The Coding Assistant is an intelligent agent designed to enhance the software de
 - 💻 **Smart Code Generation**: Generate working implementations with proper error handling
 - 🔎 **Thorough Code Reviews**: Identify bugs, security issues, and improvement opportunities
 - 📁 **File System Integration**: Seamlessly interacts with your project files
+- 🚀 **Cloud Deployment**: Ready-to-deploy setup for Google Cloud Run
+- ☕ **Java Integration**: Example Java implementation of the Bash execution service
+- 🔄 **GitHub Integration**: Access GitHub repositories for code retrieval and search
 
 https://github.com/user-attachments/assets/753255f3-7fe7-41d6-8781-bdd70028b887
 
@@ -55,9 +58,11 @@ The video was sped up.
    cp .env.example .env
    ```
 
-4. Edit the `.env` file and add your Google API key:
+4. Edit the `.env` file and add your Google API key and GitHub token (if needed):
    ```
    GOOGLE_API_KEY=your_google_api_key_here
+   GITHUB_TOKEN=your_github_personal_access_token
+   GITHUB_REPOSITORY=your_github_username/repository_name
    ```
 
 ## Running the Coding Assistant
@@ -82,6 +87,32 @@ poetry run python -m coding_assistant.main "Analyze this project structure"
 
 # Or run with the default query
 poetry run python -m coding_assistant.main
+```
+
+### Cloud Run Deployment
+
+The project includes files for deploying to Google Cloud Run:
+
+```bash
+# Build and deploy using Google Cloud Build
+gcloud builds submit --config=cloudbuild.yaml
+
+# Or run locally with Docker
+docker build -t coding-assistant:latest .
+docker run -p 8080:8080 \
+  -e GOOGLE_API_KEY=your_key_here \
+  -e GITHUB_TOKEN=your_github_token \
+  -e GITHUB_REPOSITORY=your_github_username/repo \
+  coding-assistant:latest
+```
+
+The Cloud Run deployment provides a simple API interface where you can send queries to the coding assistant via HTTP POST requests to the root endpoint.
+
+Example request:
+```bash
+curl -X POST https://your-cloud-run-url/ \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Analyze this project structure"}'
 ```
 
 ### Programmatic Usage
@@ -137,28 +168,42 @@ for event in runner.run(
 - "Generate a Python function to parse and validate CSV files"
 - "Review this code for performance issues and security vulnerabilities"
 - "Explain how this algorithm works and suggest improvements"
+- "Find all files in the GitHub repository that use JWT authentication"
+- "Get the implementation of login handler from the stephanj/DevoxxGenieApp repository"
+- "Search for error handling patterns in my GitHub project"
 
 ## Project Structure
 
 ```
-coding_assistant/
-├── sub_agents/              # Specialized agent implementations
-│   ├── analyzer/            # Code analysis agent
-│   ├── planner/             # Feature planning agent
-│   ├── coder/               # Code generation agent
-│   └── reviewer/            # Code review agent
-├── prompts/                 # Agent prompts and instructions
-├── tools/                   # Tool implementations
-│   ├── filesystem.py        # Filesystem interaction tools
-│   ├── code_analysis.py     # Code analysis tools
-│   ├── planning.py          # Planning tools
-│   ├── coding.py            # Code generation tools
-│   └── review.py            # Code review tools
-├── shared_libraries/        # Shared functionality
-│   ├── constants.py         # Constants and keys
-│   └── types.py             # Type definitions using Pydantic
-├── agent.py                 # Main agent definition
-└── main.py                  # Command-line entry point
+├── coding_assistant/        # Main Python package for AI assistant
+│   ├── sub_agents/          # Specialized agent implementations
+│   │   ├── analyzer/        # Code analysis agent
+│   │   ├── planner/         # Feature planning agent
+│   │   ├── coder/           # Code generation agent
+│   │   └── reviewer/        # Code review agent
+│   ├── prompts/             # Agent prompts and instructions
+│   ├── tools/               # Tool implementations
+│   │   ├── filesystem.py    # Filesystem interaction tools
+│   │   ├── code_analysis.py # Code analysis tools
+│   │   ├── planning.py      # Planning tools
+│   │   ├── coding.py        # Code generation tools
+│   │   ├── github_tools.py  # GitHub repository interaction
+│   │   ├── grep.py          # Advanced code search functionality
+│   │   └── review.py        # Code review tools
+│   ├── shared_libraries/    # Shared functionality
+│   │   ├── constants.py     # Constants and keys
+│   │   └── types.py         # Type definitions using Pydantic
+│   ├── agent.py             # Main agent definition
+│   ├── main.py              # Command-line entry point
+│   └── coding_assistant_context.json # Agent configuration
+├── src/                     # Java implementation
+│   └── main/java/com/devoxx/mcp/filesystem/tools/ 
+│       └── BashService.java # Java implementation of Bash execution service
+├── Dockerfile               # Container definition for Cloud Run
+├── cloud_run.py             # Flask server for Cloud Run deployments
+├── cloudbuild.yaml          # Google Cloud Build configuration
+├── pyproject.toml           # Poetry project configuration
+└── requirements.txt         # Dependencies for container deployments
 ```
 
 ## Troubleshooting
@@ -168,6 +213,8 @@ coding_assistant/
 - **API Key Issues**: Ensure your Google API key is set correctly and has access to Gemini models
 - **Import Errors**: Make sure you're using Poetry to manage dependencies
 - **Module Not Found**: Verify that you have the `PYTHONPATH` environment variable set correctly
+- **GitHub Access Issues**: Ensure your GitHub Personal Access Token has the required permissions (repo scope) and is correctly set in the .env file
+- **Repository Not Found**: Verify that the repository name is correct in the format 'username/repo'
 
 ### Getting Help
 
